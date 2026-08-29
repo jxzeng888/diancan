@@ -150,6 +150,7 @@ function changeQty(dishId, delta) {
   else state.cart[dishId] = { qty: next, remark: cur.remark };
   saveCart(state.cart);
   renderMenu();
+  renderCartPanel(); // 购物车面板同步刷新
 }
 
 // 修改某道菜的备注（无效菜id直接忽略）
@@ -161,11 +162,61 @@ function setRemark(dishId, text) {
   saveCart(state.cart);
 }
 
+// 底部购物车栏（美团式）：数量徽标 + 汇总文字
 function updateCartBar() {
   const bar = document.getElementById('cart-bar');
   const count = cartTotalCount();
-  document.getElementById('cart-count').textContent = count > 0 ? '🛒 已选 ' + count + ' 个菜' : '🛒 还没选菜哦';
+  const kinds = Object.keys(state.cart).length;
+  document.getElementById('cart-count').textContent = count > 0 ? '已选 ' + count + ' 个菜' : '还没选菜哦';
+  const badge = document.getElementById('cart-badge');
+  if (badge) badge.textContent = count;
+  const totalEl = document.getElementById('cart-total');
+  if (totalEl) totalEl.textContent = count > 0 ? kinds + ' 种菜 · 共 ' + count + ' 份' : '';
   bar.classList.toggle('hidden', count === 0);
+  if (count === 0) closeCartPanel(); // 清空后自动收起面板
+}
+
+// ---------- 购物车弹出面板（美团式） ----------
+function renderCartPanel() {
+  const box = document.getElementById('cart-panel-list');
+  if (!box) return;
+  const ids = Object.keys(state.cart);
+  if (!ids.length) {
+    box.innerHTML = '<div class="cart-panel-empty">购物车是空的，去点几个菜吧</div>';
+    const t = document.getElementById('cart-panel-total');
+    if (t) t.textContent = '';
+    return;
+  }
+  box.innerHTML = ids.map(id => {
+    const dish = findDish(id);
+    const item = state.cart[id];
+    if (!dish) return '';
+    return (
+      '<div class="cart-panel-row">' +
+        '<span class="cp-name">' + escapeHtml(dish.name) +
+          (item.remark ? '<span class="cp-remark">（' + escapeHtml(item.remark) + '）</span>' : '') +
+        '</span>' +
+        '<div class="qty-controls">' +
+          '<button class="qty-btn minus" data-act="minus" data-id="' + dish.id + '">−</button>' +
+          '<span class="qty-num">' + item.qty + '</span>' +
+          '<button class="qty-btn plus" data-act="plus" data-id="' + dish.id + '">+</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+  const t = document.getElementById('cart-panel-total');
+  if (t) t.textContent = '共 ' + cartTotalCount() + ' 份';
+}
+
+function openCartPanel() {
+  if (!cartTotalCount()) return;
+  renderCartPanel();
+  document.getElementById('cart-panel').classList.remove('hidden');
+}
+
+function closeCartPanel() {
+  const p = document.getElementById('cart-panel');
+  if (p) p.classList.add('hidden');
 }
 
 // ---------- 下单页 ----------
@@ -422,6 +473,9 @@ document.addEventListener('click', function (e) {
   const goMenu = e.target.closest('[data-gomenu]');
   if (goMenu) { location.hash = '#/menu'; return; }
   // 其他按钮
+  if (e.target.id === 'btn-cart-open') { openCartPanel(); return; }
+  if (e.target.id === 'btn-cart-close' || e.target.id === 'cart-mask') { closeCartPanel(); return; }
+  if (e.target.id === 'btn-cart-panel-go') { closeCartPanel(); location.hash = '#/cart'; return; }
   if (e.target.id === 'btn-go-cart') location.hash = '#/cart';
   if (e.target.id === 'btn-back-menu') location.hash = '#/menu';
   if (e.target.id === 'btn-submit') submitOrder();
