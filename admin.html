@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>菜单管理 · 宁都园秀饭店</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <h1>⚙️ 菜单管理</h1>
+    <span id="mode-badge" class="mode-badge">本机模式</span>
+  </header>
+
+  <main class="admin-main">
+    <!-- 操作区 -->
+    <div class="admin-actions">
+      <button id="btn-save" class="btn btn-gold">💾 保存菜单</button>
+      <button id="btn-reset" class="btn btn-danger-sm">↩️ 恢复默认</button>
+      <a class="btn btn-ghost-sm" href="index.html">← 返回点餐</a>
+    </div>
+    <p class="admin-tip" id="admin-tip">
+      改完记得点「保存菜单」。本机模式下菜单只在这台设备生效；
+      配置云端（README 第 4 步）后，保存一次全家同步。
+    </p>
+
+    <!-- 一级分类 -->
+    <section class="admin-card">
+      <h2>📂 一级分类（左侧栏）</h2>
+      <div id="cat-list"></div>
+      <button id="btn-add-cat" class="btn btn-ghost btn-sm">＋ 添加分类</button>
+    </section>
+
+    <!-- 菜品 -->
+    <section class="admin-card">
+      <h2>🍽️ 菜品</h2>
+      <div id="cat-tabs"></div>
+      <div id="dish-list-admin"></div>
+      <button id="btn-add-dish" class="btn btn-ghost btn-sm">＋ 添加菜品</button>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       云端模式（可选）：和 index.html 一样，配置好 Supabase 后
+       把下面这行 script 从注释里剪切出来：
+       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  ============================================================ -->
+
+  <script src="js/menu.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/menu-store.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
