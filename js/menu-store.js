@@ -16,7 +16,8 @@ const MenuStore = {
 
   // 初始化（要在 Store.init() 之后调用）
   async init() {
-    this.isCloud = !!(window.Store && Store.isCloud && Store.sb);
+    // 注意：Store 是 const 声明的，不在 window 上，要用 typeof 判断
+    this.isCloud = !!(typeof Store !== 'undefined' && Store.isCloud && Store.sb);
     this.sb = this.isCloud ? Store.sb : null;
   },
 
