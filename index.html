@@ -60,15 +60,11 @@
     </section>
   </main>
 
-  <!-- ============================================================
-       云端模式（可选）：想让全家人在不同手机上都看到同一份订单，
-       需要把数据存到云端。按 README.md 第 4 步配置好后，
-       把下面的 script 标签行从这段注释里剪切出来（移到注释外面）
-       即可启用云端数据库：
-       <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  ============================================================ -->
+  <!-- 云端数据库（Supabase）：配置好 js/supabase-config.js 后，全家人共享订单和菜单 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script src="js/menu.js"></script>
+  <script src="js/supabase-config.js"></script>
   <script src="js/store.js"></script>
   <script src="js/menu-store.js"></script>
   <script src="js/app.js"></script>
